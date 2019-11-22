@@ -7,10 +7,19 @@ class EventForm extends Component {
    */
   state = { title: '', date: '', city: '', venue: '', hostedBy: '' }
 
+  componentDidMount() {
+    if (this.props.eventData) {
+      this.setState({ ...this.props.eventData });
+    }
+  }
   handleOnChange = ({ target: { name, value } }) => this.setState({ [name]: value });
   handleSubmit = event => {
     event.preventDefault();
-    this.props.handleCreateEvent(this.state);
+    if (this.props.eventData) {
+      this.props.handleUpdateEvent(this.state);
+    } else {
+      this.props.handleCreateEvent(this.state);
+    }
   }
   render() {
     const { handleFormCancel } = this.props;

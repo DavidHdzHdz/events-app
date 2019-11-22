@@ -8,7 +8,7 @@ const eventListData = [
   {
     id: '1',
     title: 'Trip to Tower of London',
-    date: '2018-03-27T11:00:00+00:00',
+    date: '2018-03-27',
     category: 'culture',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
@@ -32,7 +32,7 @@ const eventListData = [
   {
     id: '2',
     title: 'Trip to Punch and Judy Pub',
-    date: '2018-03-28T14:00:00+00:00',
+    date: '2018-03-28',
     category: 'drinks',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
@@ -58,24 +58,36 @@ const eventListData = [
 class EventDashboard extends Component {
   state = {
     events: eventListData,
-    isOpenForm: false
+    isOpenForm: false,
+    selectedEvent: null
   }
 
   handleisFormOpenToggle = () => {
     // we can use a callback for use before state props
-    this.setState(({ isOpenForm }) => ({ isOpenForm: !isOpenForm }));
+    this.setState(({ isOpenForm }) => ({ isOpenForm: !isOpenForm, selectedEvent: null }));
   }
   handleCreateEvent = newEvent => {
     newEvent.id = cuid();
     newEvent.hostPhotoURL = '/assets/images/user.png';
     this.setState({ events: [ ...this.state.events, newEvent ], isOpenForm: false });
   }
+  handleUpdateEvent = updatedEvent => {
+    const updateFunc = events =>
+      events.map(event => event.id === updatedEvent.id ? { ...event, ...updatedEvent } : { ...event });
+    this.setState(({ events }) => ({ events: updateFunc(events), isOpenForm: false, selectedEvent: null }));
+  }
+  handleSelectedEvent = event => {
+    this.setState({ selectedEvent: event, isOpenForm: true });
+  };
   render() {
-    const state = this.state;
+    const { events, isOpenForm, selectedEvent } = this.state;
     return (
       <Grid>
         <Grid.Column width={10}>
-          <EventList events={state.events} />
+          <EventList
+            events={events}
+            handleSelectedEvent={this.handleSelectedEvent}
+          />
         </Grid.Column>
         <Grid.Column width={6}>
           <Button
@@ -83,10 +95,13 @@ class EventDashboard extends Component {
             content="Create Event"
             onClick={this.handleisFormOpenToggle}
           />
-          {state.isOpenForm &&
+          {isOpenForm &&
             <EventForm
+              key={selectedEvent ? selectedEvent.id : 0}
               handleFormCancel={this.handleisFormOpenToggle}
               handleCreateEvent={this.handleCreateEvent}
+              handleUpdateEvent={this.handleUpdateEvent}
+              eventData={selectedEvent}
             />
           }
         </Grid.Column>
