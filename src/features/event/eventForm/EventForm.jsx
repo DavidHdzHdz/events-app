@@ -1,32 +1,36 @@
 import React, { Component } from 'react';
 import { Segment, Form, Button } from 'semantic-ui-react';
+import { connect } from 'react-redux';
 
 class EventForm extends Component {
-  /**
-   * Controlled form in react way
-   */
   state = { title: '', date: '', city: '', venue: '', hostedBy: '' }
 
   componentDidMount() {
-    if (this.props.eventData) {
-      this.setState({ ...this.props.eventData });
+    // if user navigates to manage a event that doesn't exist it redirects to create-event rout
+    /** this is an issue with  this.props.history.goBack */
+    if(this.props.match.params.id) {
+      if(!this.props.eventData) {
+        this.props.history.push('/create-event');
+      } else {
+        this.setState({ ...this.props.eventData });
+      }
     }
   }
   handleOnChange = ({ target: { name, value } }) => this.setState({ [name]: value });
   handleSubmit = event => {
     event.preventDefault();
     if (this.props.eventData) {
-      this.props.handleUpdateEvent(this.state);
+      // this.props.handleUpdateEvent(this.state);
     } else {
-      this.props.handleCreateEvent(this.state);
+      // this.props.handleCreateEvent(this.state);
     }
   }
   render() {
-    const { handleFormCancel } = this.props;
     const { title, date, city, venue, hostedBy } = this.state;
-
+    const { eventData } = this.props;
     return (
       <Segment>
+        {eventData ? <h2> Update "{eventData.title}" event</h2> : <h2>Create Event</h2>}
         <Form onSubmit={this.handleSubmit}>
           <Form.Field>
             <label>Event Title</label>
@@ -77,11 +81,20 @@ class EventForm extends Component {
           <Button positive type='submit'>
             Submit
           </Button>
-          <Button type='button' onClick={handleFormCancel}>Cancel</Button>
+          <Button type='button' onClick={this.props.history.goBack}>Cancel</Button>
         </Form>
       </Segment>
     )
   }
 }
 
-export default EventForm;
+const mapStateToProps = (state, ownProps) => {
+  const { events } = state;
+  const { match: { params: { id } } } = ownProps;
+  if (events.length > 0 && events.some(event => event.id === id)) {
+    return { eventData: events.find(event => event.id === id) }
+  }
+  return { eventData: null }
+}
+
+export default connect(mapStateToProps)(EventForm);

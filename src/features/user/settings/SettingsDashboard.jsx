@@ -1,11 +1,29 @@
 import React from 'react'
 // import PropTypes from 'prop-types'
+import { Grid } from 'semantic-ui-react';
+import SettingsNav from './SettingsNav';
+import { Route, Redirect, Switch } from 'react-router-dom';
+import BasicPage from './BasicPage';
+import AboutPage from './AboutPage';
+import PhotosPage from './PhotosPage';
+import AccountPage from './AccountPage';
 
 const SettingsDashboard = props => {
   return (
-    <div>
-      SettingsDashboard
-    </div>
+    <Grid>
+      <Grid.Column width={12}>
+        <Switch>
+          <Redirect exact from='/settings' to='/settings/basic'/>
+          <Route exact path='/settings/basic' component={BasicPage} />
+          <Route exact path='/settings/about' component={AboutPage} />
+          <Route exact path='/settings/photos' component={PhotosPage} />
+          <Route exact path='/settings/account' component={AccountPage} />
+        </Switch>
+      </Grid.Column>
+      <Grid.Column width={4}>
+        <SettingsNav />
+      </Grid.Column>
+    </Grid>
   )
 }
 
