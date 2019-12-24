@@ -24,7 +24,6 @@ const App = ({ location }) => {
             <Container className='main'>
               {/*  */}
               <Switch key={location.key}>
-                <Route exact path='/' component={HomePage}/>
                 <Route exact path='/events' component={EventDashboard}/>
                 <Route exact path='/event/:id' component={EventDetailedPage}/>
                 <Route exact path='/people' component={PeopleDashboard}/>
