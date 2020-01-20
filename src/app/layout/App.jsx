@@ -10,10 +10,12 @@ import UserDetailedPage from '../../features/user/userDetailed/UserDetailedPage'
 import SettingsDashboard from '../../features/user/settings/SettingsDashboard';
 import EventForm from '../../features/event/eventForm/EventForm';
 import ReduxTestComponent from '../../features/reduxTestArea/ReduxTestComponent';
+import ModalsManager from '../../features/modals/ModalsManager';
 
 const App = ({ location }) => {
   return (
     <Fragment>
+      <ModalsManager />
       {/* we can use the following syntax for render home and navbar pages' sets */}
       <Route exact path='/' component={HomePage}/>
       <Route

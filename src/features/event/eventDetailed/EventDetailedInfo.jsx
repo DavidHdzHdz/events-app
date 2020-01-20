@@ -1,8 +1,12 @@
-import React from 'react'
+/* global google */
+import React, { useState } from 'react'
 // import PropTypes from 'prop-types'
 import { Segment, Grid, Icon, Button } from 'semantic-ui-react';
+import { EventDetailedMap }  from './EventDetailedMap';
 
 const EventDetailedInfo = ({ event }) => {
+  const [ isMapOpened, setIsMapOpened ] = useState(false);
+  console.log(event.venueLatLng);
   return (
     <Segment.Group>
       <Segment attached="top">
@@ -34,10 +38,22 @@ const EventDetailedInfo = ({ event }) => {
             <span>{event.venue}</span>
           </Grid.Column>
           <Grid.Column width={4}>
-            <Button color="teal" size="tiny" content="Show Map" />
+            <Button
+              color="teal"
+              size="tiny"
+              content={isMapOpened ? 'Hide Map' : 'Show Map'}
+              onClick={() => setIsMapOpened(!isMapOpened)}
+            />
           </Grid.Column>
         </Grid>
       </Segment>
+      {isMapOpened &&
+        <EventDetailedMap
+          google={google}
+          style={{ width: '100%', height: '300px' }}
+          center={event.venueLatLng}
+        />
+      }
     </Segment.Group>
   )
 }
