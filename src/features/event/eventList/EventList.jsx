@@ -6,7 +6,6 @@ class EventList extends Component {
     const { events, handleDeleteEvent } = this.props;
     return (
       <div>
-        <h1>Events List</h1>
         {
           events && events.map(event => (
             <EventListItem

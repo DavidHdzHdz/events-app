@@ -4,7 +4,7 @@ import LoginForm from '../auth/login/LoginForm';
 
 const LoginModal = ({ opened = false, onClose }) => {
   return (
-    <Modal closeIcon='close' open={opened} onClose={onClose}>
+    <Modal size='tiny' closeIcon='close' open={opened} onClose={onClose} >
       <LoginForm formStyle={{ padding: '60px 30px' }}/>
     </Modal>
   )

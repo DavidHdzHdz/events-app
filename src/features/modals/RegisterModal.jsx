@@ -4,7 +4,7 @@ import RegisterForm from '../auth/register/RegisterForm';
 
 const RegisterModal = ({ opened = false, onClose }) => {
   return (
-    <Modal closeIcon='close' open={opened} onClose={onClose}>
+    <Modal size='tiny' closeIcon='close' open={opened} onClose={onClose} >
       <RegisterForm formStyle={{ padding: '60px 30px' }}/>
     </Modal>
   )

@@ -2,10 +2,12 @@ import React from 'react';
 import { Form, Segment, Button, Header } from 'semantic-ui-react';
 import { Field, reduxForm } from 'redux-form';
 import TextInput from '../../../app/common/form/TextInput';
+import { connect } from 'react-redux';
+import { authSingUp } from '../authActions';
 
-const RegisterForm = ({ formStyle }) => {
+const RegisterForm = ({ formStyle, handleSubmit, authSingUp }) => {
   return (
-    <Form size="large">
+    <Form size="large" onSubmit={handleSubmit(authSingUp)} >
       <Segment style={formStyle} >
         <Header sub textAlign='center' content='Register to Events App' />
         <br />
@@ -30,7 +32,7 @@ const RegisterForm = ({ formStyle }) => {
           label='Password'
           placeholder="Password"
         />
-        <Button fluid size="large" color="teal">
+        <Button fluid type='submit' size="large" color="teal">
           Register
         </Button>
       </Segment>
@@ -38,4 +40,6 @@ const RegisterForm = ({ formStyle }) => {
   );
 };
 
-export default reduxForm({ form: 'registerForm' })(RegisterForm);
+const mapActionsToProps = { authSingUp }
+
+export default connect(null, mapActionsToProps)(reduxForm({ form: 'registerForm' })(RegisterForm));

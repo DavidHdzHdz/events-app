@@ -2,7 +2,7 @@
 import React, { useState, useEffect, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
-import { incrementCounter, decrementCounter, setCounter } from './testActions';
+import { asyncIncrementCounter, asyncDecrementCounter, setCounter } from './testActions';
 import { Button, Form } from 'semantic-ui-react';
 import PlacesInputTest from './PlacesInputTest';
 import { MapContainer } from './MapContainer';
@@ -13,10 +13,12 @@ import { openModal } from '../modals/modalsActions';
 
 const ReduxTestComponent = ({
   data,
-  incrementCounter,
-  decrementCounter,
+  asyncIncrementCounter,
+  asyncDecrementCounter,
   setCounter,
   openModal,
+  isLoading,
+  elementName
 }) => {
   const [ state, setstate ] = useState(data);
   const [ latLng, setlatLng ] = useState({});
@@ -31,8 +33,20 @@ const ReduxTestComponent = ({
   return (
     <Fragment>
       <h1>data in store is: <span style={{ color: 'blue' }}>{data}</span></h1>
-      <Button onClick={incrementCounter} positive content='Incrementar'/>
-      <Button onClick={decrementCounter} negative content='Decrementar'/>
+      <Button
+        name='incrementButton'
+        loading={elementName === 'incrementButton' && isLoading}
+        onClick={event => asyncIncrementCounter(event.target.name)}
+        positive
+        content='Incrementar'
+      />
+      <Button
+        name='decrementButton'
+        loading={elementName === 'decrementButton' && isLoading}
+        onClick={event => asyncDecrementCounter(event.target.name)}
+        negative
+        content='Decrementar'
+      />
       <Form onSubmit={(event) => {
         event.preventDefault();
         console.log(state);
@@ -73,19 +87,22 @@ const ReduxTestComponent = ({
 
 ReduxTestComponent.propTypes = {
   data: PropTypes.number.isRequired,
-  incrementCounter: PropTypes.func.isRequired,
-  decrementCounter: PropTypes.func.isRequired,
+  asyncIncrementCounter: PropTypes.func.isRequired,
+  asyncDecrementCounter: PropTypes.func.isRequired,
   setCounter: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = state => ({
-  data: state.test.data
+  data: state.test.data,
+  isLoading: state.async.isLoading,
+  elementName: state.async.elementName
 })
 
 const mapActionsToProps = {
-  incrementCounter,
-  decrementCounter,
+  asyncIncrementCounter,
+  asyncDecrementCounter,
   setCounter,
   openModal
 }

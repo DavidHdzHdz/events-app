@@ -2,23 +2,41 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import 'semantic-ui-css/semantic.min.css';
+import 'react-redux-toastr/lib/css/react-redux-toastr.min.css';
 import App from './app/layout/App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from './app/store/configureStore';
 import ScrollToTop from './app/common/util/ScrollToTop';
+import ReduxToastr from 'react-redux-toastr';
+import { getEvents } from './features/event/eventActions';
+import firebaseInstance from './app/config/firebase';
+import { ReactReduxFirebaseProvider } from 'react-redux-firebase'
+import { createFirestoreInstance } from 'redux-firestore'
 
 const store = configureStore();
-
-console.log(store.getState());
+store.dispatch(getEvents());
 
 ReactDOM.render(
   <Provider store={store}>
-    <BrowserRouter>
-      <ScrollToTop />
-      <App />
-    </BrowserRouter>
+    {/* we create firebase provider with instances of firebase & firestore */}
+    <ReactReduxFirebaseProvider
+      firebase={firebaseInstance}
+      config={{ userProfile: 'users', attachAuthIsReady: true, useFirestoreForProfile: true }}
+      dispatch={store.dispatch}
+      createFirestoreInstance={createFirestoreInstance}
+    >
+      <BrowserRouter>
+        <ReduxToastr
+          position="bottom-right"
+          transitionIn="fadeIn"
+          transitionOut="fadeOut"
+        />
+        <ScrollToTop />
+        <App />
+      </BrowserRouter>
+    </ReactReduxFirebaseProvider>
   </Provider>
 , document.getElementById('root'));
 

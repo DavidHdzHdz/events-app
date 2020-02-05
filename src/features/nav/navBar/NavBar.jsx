@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Container, Menu, Button } from 'semantic-ui-react';
 import { NavLink, Link, withRouter } from 'react-router-dom';
 import SignedOutMenu from '../menus/SignedOutMenu';
 import SignedInMenu from '../menus/SignedInMenu';
 import { connect } from 'react-redux';
 import { openModal } from '../../modals/modalsActions';
+import { authLogOut } from '../../auth/authActions';
 
 class NavBar extends Component {
-  state = { isAuthenticated: false }
   handleLogin = () => {
     this.props.openModal('LoginModal');
     // this.setState({ isAuthenticated: true });
@@ -17,11 +17,11 @@ class NavBar extends Component {
     // this.setState({ isAuthenticated: true });
   };
   handleLogout = () => {
-    this.setState({ isAuthenticated: false });
+    this.props.authLogOut();
     this.props.history.push('/');
   }
   render() {
-    const { isAuthenticated } = this.state
+    const { isAuthenticated, user } = this.props.auth;
     return (
       <Menu inverted fixed='top'>
         <Container>
@@ -30,20 +30,24 @@ class NavBar extends Component {
             Events App
           </Menu.Item>
           <Menu.Item as={NavLink} exact to='/events' name='Events' />
-          <Menu.Item as={NavLink} exact to='/people' name='People' />
-          <Menu.Item as={NavLink} exact to='/test' name='Test' />
-          <Menu.Item>
-            <Button
-              as={Link}
-              to='/create-event'
-              floated='right'
-              positive
-              inverted
-              content='Create Event'
-            />
-          </Menu.Item>
+          {isAuthenticated && (
+            <Fragment>
+              <Menu.Item as={NavLink} exact to='/people' name='People' />
+              <Menu.Item as={NavLink} exact to='/test' name='Test' />
+              <Menu.Item>
+                <Button
+                  as={Link}
+                  to='/create-event'
+                  floated='right'
+                  positive
+                  inverted
+                  content='Create Event'
+                />
+              </Menu.Item>
+            </Fragment>
+          )}
           {isAuthenticated ?
-            <SignedInMenu handleLogout={this.handleLogout} /> :
+            <SignedInMenu handleLogout={this.handleLogout} user={user} /> :
             <SignedOutMenu handleLogin={this.handleLogin} handleRegister={this.handleRegister} />
           }
         </Container>
@@ -52,6 +56,7 @@ class NavBar extends Component {
   }
 }
 
-const mapActionsToProps = { openModal }
+const mapStateToProps = state => ({ auth: state.auth });
+const mapActionsToProps = { openModal, authLogOut }
 
-export default withRouter(connect(null, mapActionsToProps)(NavBar));
+export default withRouter(connect(mapStateToProps, mapActionsToProps)(NavBar));

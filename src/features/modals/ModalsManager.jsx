@@ -7,7 +7,7 @@ import RegisterModal from './RegisterModal';
 
 
 const ModalsManager = ({ modals: { modalType, modalProps, opened }, closeModal }) => {
-  const modals = { TestModal, LoginModal, RegisterModal  }
+  const modals = { TestModal, LoginModal, RegisterModal }
   const CurrentModal = modals[modalType];
   return CurrentModal ? <CurrentModal opened={opened} {...modalProps} onClose={() => closeModal(modalType, {})} /> : null
 }
